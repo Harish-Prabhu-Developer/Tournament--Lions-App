@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import UserModel from "../Model/UserModel.js";
 import generateToken from "../Config/jwthelper.js";
 import { Op } from "sequelize";
+import { generateAvatar } from "../Utils/AvatarGenerator.js";
 
 // Register User
 export const registerUser = async (req, res) => {
@@ -20,6 +21,9 @@ export const registerUser = async (req, res) => {
 
     // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // // generate DiceBear avatar (use initials/phone/email as seed)
+    // const avatarUrl = generateAvatar(name, role, gender);
 
     // create user
     const newUser = await UserModel.create({
@@ -42,6 +46,7 @@ export const registerUser = async (req, res) => {
         role: newUser.role,
         dob: newUser.dob,
         gender: newUser.gender,
+        profile_image: newUser.profile_image,
       },
     });
   } catch (error) {
@@ -69,18 +74,19 @@ export const loginUser = async (req, res) => {
 
     // generate JWT
     const token = generateToken({
-        id: user.id,
-        name: user.name,
-        phone: user.phone,
-        email: user.email,
-        role: user.role,
-        dob: user.dob,
-        gender: user.gender,
-      
-    })
+      id: user.id,
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+      role: user.role,
+      dob: user.dob,
+      gender: user.gender,
+      profile_image: user.profile_image,
+    });
+
     res.json({
       msg: "Login successful",
-      token
+      token,
     });
   } catch (error) {
     console.error("Login Error:", error);

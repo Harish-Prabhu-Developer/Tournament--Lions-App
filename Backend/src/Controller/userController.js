@@ -99,8 +99,7 @@ export const getUserById = async (req, res) => {
     const { id } = req.params;
     const user = await UserModel.findByPk(id);
     if (!user) return res.status(404).json({ msg: "User not found" });
-
-    res.json({ user });
+    res.json(user);
   } catch (error) {
     console.error("Get User Error:", error);
     res.status(500).json({ msg: "Server error" });
@@ -112,7 +111,7 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.findAll({
       attributes: { exclude: ["password"] }, // don't send passwords
-      order: [["id", "ASC"]],
+      order: [["id", "ASC"]],  //Order by ASc
     });
     res.json({ users });
   } catch (error) {
