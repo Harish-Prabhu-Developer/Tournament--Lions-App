@@ -67,7 +67,7 @@ const SplashScreen: React.FC = () => {
         <View style={styles.logoGlow} />
         <Animated.View style={logoStyle}>
           <Image
-            source={require("../assets/Images/image.png")} // tournament logo
+            source={require("../assets/Images/logo.png")} // tournament logo
             style={styles.logo}
             resizeMode="contain"
           />

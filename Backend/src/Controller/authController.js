@@ -58,18 +58,28 @@ export const registerUser = async (req, res) => {
 // Login User
 export const loginUser = async (req, res) => {
   try {
-    const { phone, password } = req.body;
+    const { phone,email, password } = req.body;
+if (!phone && !email) {
+    return res.status(400).json({ msg: "Phone or Email is required" });
+  }
+  // find user by phone or email
+  const user = await UserModel.findOne({
+    where: {
+      [Op.or]: [
+        phone ? { phone } : null,
+        email ? { email } : null,
+      ].filter(Boolean), // removes null entries
+    },
+  });
 
-    // find user by phone
-    const user = await UserModel.findOne({ where: { phone } });
-    if (!user) {
-      return res.status(404).json({ msg: "User not found" });
-    }
+  if (!user) {
+    return res.status(404).json({ msg: "User not found" });
+  }
 
     // compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ msg: "Invalid credentials" });
+      return res.status(401).json({ msg: "password mismatch" });
     }
 
     // generate JWT

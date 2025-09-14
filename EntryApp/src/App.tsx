@@ -5,8 +5,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './Screens/LoginScreen';
 import BottomTab from './Navigation/BottomTab';
 import SplashScreen from './Screens/SplashScreen';
-
-type RootStackParamList = {
+import { Provider } from 'react-redux';
+import Store from './Redux/Store';
+export type RootStackParamList = {
   Login: undefined;
   Tabs: undefined;
 };
@@ -24,19 +25,21 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
   return (
-    <NavigationContainer>
-      {showSplash ? (
-        <SplashScreen />
-      ) : (
-        <Stack.Navigator
-          initialRouteName="Login"
-          screenOptions={{ headerShown: false, animation: 'fade' }}
-        >
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Tabs" component={BottomTab} />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
+    <Provider store={Store}>
+      <NavigationContainer>
+        {showSplash ? (
+          <SplashScreen />
+        ) : (
+          <Stack.Navigator
+            initialRouteName="Login"
+            screenOptions={{ headerShown: false, animation: 'fade' }}
+          >
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Tabs" component={BottomTab} />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </Provider>
   );
 };
 
