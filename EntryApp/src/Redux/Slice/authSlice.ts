@@ -3,6 +3,9 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';              // <-- correct import
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../Config/Constants';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../App';
 
 interface AuthState {
   loading: boolean;
@@ -28,7 +31,7 @@ type RejectPayload = {
 
 export const login = createAsyncThunk<
   LoginPayload,
-  { email: string; password: string },
+  { email?: string;phone?:number; password: string },
   { rejectValue: RejectPayload }
 >(
   'tournaments/auth/login',
@@ -54,6 +57,7 @@ export const login = createAsyncThunk<
       const decoded = jwtDecode(token); // decode for storing user info
       // persist token/user BEFORE returning success
       await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('isLoggedIn', 'true');
       await AsyncStorage.setItem('user', JSON.stringify(decoded));
 
       return {
@@ -81,10 +85,20 @@ export const login = createAsyncThunk<
   }
 );
 
+// ✅ Async logout
+export const logout = createAsyncThunk("auth/logout", async () => {
+  await AsyncStorage.removeItem("token");
+  await AsyncStorage.removeItem("isLoggedIn");
+  await AsyncStorage.removeItem("user");
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  navigation.navigate('Login');
+  return true;
+})
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: builder => {
     builder
       .addCase(login.pending, state => {

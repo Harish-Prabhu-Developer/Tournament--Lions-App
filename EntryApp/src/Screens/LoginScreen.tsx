@@ -10,6 +10,7 @@ import {
   Keyboard,
   Pressable,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
@@ -23,13 +24,16 @@ import { RootStackParamList } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../Redux/Store';
 import { login } from '../Redux/Slice/authSlice';
+import { useToast } from '../Components/Common/CustomToast';
+import axios from 'axios';
+import { API_URL } from '../Config/Constants';
 
 const LoginScreen = () => {
    const [loginId, setLoginId] = useState(''); 
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+  const {showToast} =useToast();
   const dispatch = useDispatch<AppDispatch>();
   const {loading,error} =useSelector((state:RootState)=>state.auth)
     const [isLoading, setIsLoading] = useState(loading);
@@ -77,11 +81,14 @@ const LoginScreen = () => {
 
       // Optional delay before navigating (e.g., to show loader)
       setTimeout(() => {
+        showToast(res.message || "Login successful", "success", undefined, 500);
+
         setIsLoading(false);
         navigation.navigate('Tabs');
       }, 500); // 500ms delay, adjust as needed
     } else {
       // unwrap normally throws on reject, so this is defensive
+      showToast(res.message || 'Login failed', 'error');
       setErrorMessage(res.message || 'Login failed');
     }
     setIsLoading(false);
@@ -106,7 +113,10 @@ const LoginScreen = () => {
   }
 };
 
-
+// Forget Password
+const handleForgotPassword =async () => {
+  Linking.openURL(`${API_URL}/tournaments/auth/forgetpass`);
+};
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
       <StatusBar
@@ -215,7 +225,7 @@ const LoginScreen = () => {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleForgotPassword}>
                 <Text className="text-right underline text-md text-indigo-700 font-semibold">
                   Forgot password?
                 </Text>

@@ -1,52 +1,33 @@
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../Screens/HomeScreen";
 import MyEntriesScreen from "../Screens/MyEntriesScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
+import MyTabBar from "./MyTabBar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type TabItem = {
-  route: string;
-  label: string;
-  icon: string;
-  component: React.ComponentType<any>;
+export type RootTabBarParamList = {
+  Home: undefined;
+  MyEntries: undefined;
+  Profile: undefined;
 };
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabBarParamList>();
 
-const TabArr: TabItem[] = [
-  { route: "Home", label: "Home", icon: "home", component: HomeScreen },
-  { route: "MyEntries", label: "My Entries", icon: "tasks", component: MyEntriesScreen },
-  { route: "Profile", label: "Profile", icon: "user", component: ProfileScreen },
-];
-
-const BottomTab: React.FC = () => {
-  const insets = useSafeAreaInsets();
+const BottomTab = () => {
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          position: "absolute",
-          height: 60 + insets.bottom, // 👈 increase height with safe area
-          // paddingBottom: insets.bottom, // 👈 push icons above the safe area
-          bottom: 0,
-          right: 0,
-          left: 0,
-        },
+        animation: "fade",
       }}
-      initialRouteName="Home"
+      
+      tabBar={(props) => <MyTabBar {...props} />}
     >
-      {TabArr.map((item, index) => (
-        <Tab.Screen
-          key={index}
-          name={item.route}
-          component={item.component}
-          options={{
-            tabBarShowLabel: false,
-          }}
-        />
-      ))}
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: "Home" }} />
+      <Tab.Screen name="MyEntries" component={MyEntriesScreen} options={{ tabBarLabel: "My Entries" }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: "Profile" }} />
     </Tab.Navigator>
   );
 };

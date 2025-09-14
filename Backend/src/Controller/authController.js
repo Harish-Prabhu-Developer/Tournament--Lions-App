@@ -1,10 +1,10 @@
-// authController.js
+// Controller/authController.js
 import bcrypt from "bcryptjs";
 import UserModel from "../Model/UserModel.js";
 import generateToken from "../Config/jwthelper.js";
 import { Op } from "sequelize";
 import { generateAvatar } from "../Utils/AvatarGenerator.js";
-
+import path from "path";
 // Register User
 export const registerUser = async (req, res) => {
   try {
@@ -103,3 +103,46 @@ if (!phone && !email) {
     res.status(500).json({ msg: "Server error" });
   }
 };
+
+// Forget Password Controller
+export const ForgetPass = (req, res) => {
+  const __dirname = path.resolve();
+  res.sendFile(path.join(__dirname, "public", "forget-password.html"));
+};
+
+// Reset Password
+export const ResetPassword = async (req, res) => {
+  try {
+    const { emailOrPhone, newPassword } = req.body;
+
+    if (!emailOrPhone) {
+      return res.status(400).send("Email or Phone is required");
+    }
+
+    // Find user by email OR phone
+    const user = await UserModel.findOne({
+      where: {
+        [Op.or]: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+      },
+    });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await user.update({ password: hashedPassword });
+
+    // ✅ Send success HTML instead of plain text
+    const __dirname = path.resolve();
+    return res.sendFile(path.join(__dirname, "public", "Success.html"));
+
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    res.status(500).send("Server error");
+  }
+};
+
