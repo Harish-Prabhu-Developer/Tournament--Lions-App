@@ -1,3 +1,4 @@
+// roleMiddleware.js
 export const authorizeRoles = (...allowedRoles) => {
     return (req, res, next) => {
       console.log("User Role:", req.user.role);  // Debug log

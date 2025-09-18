@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import { sequelize, connectDB } from "./Config/db.js";
 import router from "./Route/index.js";
-import { generateAvatar } from "./Utils/AvatarGenerator.js";
-
+import https from "https";
+import {CronJob} from "cron";
 dotenv.config();
 
 const app = express();
@@ -26,24 +26,29 @@ connectDB()
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
-      // Player male
-console.log(generateAvatar("John Doe", "player", "male"));
-
-// Organizer female
-console.log(generateAvatar("Alice", "organizer", "female"));
-
-// Admin neutral
-console.log(generateAvatar("Boss", "admin", "neutral"));
-
-    });
+      });
   })
   .catch((err) => {
-    console.error("❌ Failed to connect DB. Server not started:", err);
+    console.error("❌ Failed to connect DB. Server not started:", err.message);
   });
+
+//Cron Job
+const Job=new CronJob("*/14 * * * *", function(){
+  https.get(process.env.API_URL, (res) => {
+      console.log("Now Working Time : ", new Date().toUTCString());
+      if(res.statusCode===200) console.log("The Tournament Server GET REQUEST IS WORKING");
+      else console.log("The Tournament Server WORKING Failed for Status Code : ", res.statusCode);
+      
+  }).on('error', (err) => {
+      console.log("WHILE GET Error on Cron Job : ", err.message);
+  });
+});
+// Start Cron Job
+Job.start();
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("🎉 Tournament API is running!");
+  res.send("🎉 Tournament Backend is running!");
 });
 
-app.use("/tournaments",router);
+app.use("/tournaments", router);

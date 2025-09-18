@@ -1,3 +1,4 @@
+// authMiddleware.js
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -24,7 +25,7 @@ export const authenticateUser = (req, res, next) => {
       });
   
     } catch (error) {
-      console.error("Authentication error:", error);
+      console.error("Authentication error:", error.message);
       return res.status(500).json({ status: "fail", msg: "Internal server error", error: error.message });
     }
   };

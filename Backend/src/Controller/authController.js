@@ -50,8 +50,8 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Register Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Register Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
@@ -99,8 +99,8 @@ if (!phone && !email) {
       token,
     });
   } catch (error) {
-    console.error("Login Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Login Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 

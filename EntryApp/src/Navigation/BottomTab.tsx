@@ -4,10 +4,12 @@ import HomeScreen from "../Screens/HomeScreen";
 import MyEntriesScreen from "../Screens/MyEntriesScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import MyTabBar from "./MyTabBar";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import TournamentScreen from "../Screens/TournamentScreen";
+
 
 export type RootTabBarParamList = {
-  Home: undefined;
+   Home: undefined;
+  Tournaments: undefined;
   MyEntries: undefined;
   Profile: undefined;
 };
@@ -20,12 +22,12 @@ const BottomTab = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        animation: "fade",
       }}
       
       tabBar={(props) => <MyTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: "Home" }} />
+      <Tab.Screen name="Tournaments" component={TournamentScreen} options={{tabBarLabel:"Tournaments"}}/>
       <Tab.Screen name="MyEntries" component={MyEntriesScreen} options={{ tabBarLabel: "My Entries" }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: "Profile" }} />
     </Tab.Navigator>

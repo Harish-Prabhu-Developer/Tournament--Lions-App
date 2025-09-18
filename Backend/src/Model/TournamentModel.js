@@ -1,4 +1,4 @@
-// models/TournamentModel.js
+// Model/TournamentModel.js
 import { DataTypes } from "sequelize";
 import { sequelize } from "../Config/db.js";
 import UserModel from "./UserModel.js";

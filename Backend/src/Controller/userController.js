@@ -41,8 +41,8 @@ export const createUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Create User Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Create User Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
@@ -73,8 +73,8 @@ export const updateUser = async (req, res) => {
 
     res.json({ msg: "User updated successfully", user });
   } catch (error) {
-    console.error("Update User Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Update User Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
@@ -88,8 +88,8 @@ export const deleteUser = async (req, res) => {
     await user.destroy();
     res.json({ msg: "User deleted successfully" });
   } catch (error) {
-    console.error("Delete User Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Delete User Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
@@ -101,8 +101,8 @@ export const getUserById = async (req, res) => {
     if (!user) return res.status(404).json({ msg: "User not found" });
     res.json(user);
   } catch (error) {
-    console.error("Get User Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Get User Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
@@ -115,7 +115,7 @@ export const getAllUsers = async (req, res) => {
     });
     res.json({ users });
   } catch (error) {
-    console.error("Get All Users Error:", error);
-    res.status(500).json({ msg: "Server error" });
+    console.error("Get All Users Error:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
